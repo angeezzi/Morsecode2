@@ -1,5 +1,6 @@
 class MorseCodeDashboard {
     constructor() {
+        console.log('MorseCodeDashboard constructor called');
         this.socket = null;
         this.isConnected = false;
         this.messageHistory = [];
@@ -9,15 +10,20 @@ class MorseCodeDashboard {
         this.loadCommonPorts(); // Load ports immediately
         this.setupSocketListeners();
         this.populateMorseReference();
+        console.log('MorseCodeDashboard initialization complete');
     }
 
     initializeElements() {
+        console.log('Initializing Morse code elements...');
         // Connection elements
         this.portSelect = document.getElementById('portSelect');
         this.refreshPortsBtn = document.getElementById('refreshPorts');
         this.connectBtn = document.getElementById('connectBtn');
         this.disconnectBtn = document.getElementById('disconnectBtn');
         this.connectionStatus = document.getElementById('connectionStatus');
+        
+        console.log('Port select element:', this.portSelect);
+        console.log('Refresh button element:', this.refreshPortsBtn);
 
         // Morse display elements
         this.currentLetter = document.getElementById('currentLetter');
@@ -130,6 +136,13 @@ class MorseCodeDashboard {
     }
 
     loadCommonPorts() {
+        console.log('Loading common ports for Morse code system...');
+        
+        if (!this.portSelect) {
+            console.error('Port select element not found!');
+            return;
+        }
+        
         this.portSelect.innerHTML = '<option value="">Select a port...</option>';
         
         const commonPorts = [
@@ -153,6 +166,7 @@ class MorseCodeDashboard {
             this.portSelect.appendChild(option);
         });
         
+        console.log('Common ports loaded successfully');
         this.addMessage('info', 'Common ports loaded - COM3 is recommended');
     }
 
