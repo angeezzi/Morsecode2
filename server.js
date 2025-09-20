@@ -109,6 +109,10 @@ async function getAvailablePorts() {
 
 // Routes
 app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/arduino-unified.html');
+});
+
+app.get('/hub', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 

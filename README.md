@@ -48,9 +48,9 @@ A complete system for real-time communication between Arduino and a web browser 
    ```
    The server will start on `http://localhost:3000`
 
-2. **Choose your interface**
+2. **Open the unified interface**
    - Open your browser and go to `http://localhost:3000`
-   - Select either the General Arduino Dashboard or Morse Code System
+   - Use the toggle buttons to switch between General Dashboard and Morse Code System
 
 3. **Connect to Arduino**
    - Click "Refresh" to scan for available ports
@@ -58,13 +58,14 @@ A complete system for real-time communication between Arduino and a web browser 
    - Click "Connect" to establish communication
 
 4. **Start communicating**
+   - **Toggle between modes** using the buttons at the top
    - **General Dashboard**: Send commands, monitor sensors, view real-time data
    - **Morse Code System**: Use buttons to input Morse code, see real-time translation
 
 ### Option 2: Static Hosting (Demo Only)
-- For GitHub Pages or static hosting, use `static-demo.html` as your index
+- For GitHub Pages or static hosting, use `arduino-unified.html` as your main page
 - This provides a demonstration interface but requires local server for Arduino communication
-- Direct file access: `arduino-dashboard.html` and `morse-dashboard.html`
+- Alternative: Use `static-demo.html` for a simple demo page
 
 ## 📁 Project Structure
 
@@ -72,7 +73,8 @@ A complete system for real-time communication between Arduino and a web browser 
 arduino-web-communication/
 ├── server.js                 # Node.js server with serial communication
 ├── package.json              # Project dependencies and scripts
-├── hub.html                  # Main hub page for choosing interface
+├── arduino-unified.html      # Main unified interface (default)
+├── index.html                # Hub page for choosing interface
 ├── arduino-dashboard.html    # General Arduino dashboard
 ├── arduino-styles.css        # General dashboard styling
 ├── arduino-script.js         # General dashboard JavaScript
