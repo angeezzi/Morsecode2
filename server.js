@@ -197,9 +197,29 @@ io.on('connection', (socket) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log('Arduino Web Communication System Ready!');
+const HOST = '0.0.0.0'; // Allow connections from any IP
+
+server.listen(PORT, HOST, () => {
+  console.log('='.repeat(60));
+  console.log('🚀 Arduino Web Communication System Ready!');
+  console.log('='.repeat(60));
+  console.log(`📡 Server running on:`);
+  console.log(`   • Local: http://localhost:${PORT}`);
+  console.log(`   • Network: http://[YOUR_IP]:${PORT}`);
+  console.log('='.repeat(60));
+  console.log('🌐 Multi-User Access:');
+  console.log('   • You can connect from this computer');
+  console.log('   • Your friend can connect from their computer');
+  console.log('   • Each person can connect their own Arduino');
+  console.log('='.repeat(60));
+  console.log('📋 Available Pages:');
+  console.log(`   • Main Interface: http://localhost:${PORT}/`);
+  console.log(`   • Hub: http://localhost:${PORT}/hub`);
+  console.log(`   • General Dashboard: http://localhost:${PORT}/general`);
+  console.log(`   • Morse Code Dashboard: http://localhost:${PORT}/morse`);
+  console.log('='.repeat(60));
+  console.log('⚠️  Note: Make sure Windows Firewall allows this connection');
+  console.log('='.repeat(60));
 });
 
 // Graceful shutdown
