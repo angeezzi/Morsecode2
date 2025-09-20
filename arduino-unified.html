@@ -717,6 +717,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeElements();
             setupEventListeners();
+            // Load ports immediately and also try server detection
+            loadCommonPorts();
             loadAvailablePorts();
         });
 
@@ -827,6 +829,34 @@
             document.getElementById('morse-content').classList.toggle('active', mode === 'morse');
             
             currentMode = mode;
+        }
+
+        function loadCommonPorts() {
+            // Load common ports immediately
+            portSelect.innerHTML = '<option value="">Select a port...</option>';
+            
+            const commonPorts = [
+                { path: 'COM3', friendlyName: 'Arduino COM3 (Recommended)' },
+                { path: 'COM1', friendlyName: 'Arduino COM1' },
+                { path: 'COM4', friendlyName: 'Arduino COM4' },
+                { path: 'COM5', friendlyName: 'Arduino COM5' },
+                { path: 'COM6', friendlyName: 'Arduino COM6' },
+                { path: 'COM7', friendlyName: 'Arduino COM7' },
+                { path: 'COM8', friendlyName: 'Arduino COM8' },
+                { path: '/dev/ttyUSB0', friendlyName: 'Arduino USB0 (Linux)' },
+                { path: '/dev/ttyACM0', friendlyName: 'Arduino ACM0 (Linux)' },
+                { path: '/dev/ttyUSB1', friendlyName: 'Arduino USB1 (Linux)' },
+                { path: '/dev/ttyACM1', friendlyName: 'Arduino ACM1 (Linux)' }
+            ];
+            
+            commonPorts.forEach(port => {
+                const option = document.createElement('option');
+                option.value = port.path;
+                option.textContent = `${port.friendlyName} (${port.path})`;
+                portSelect.appendChild(option);
+            });
+            
+            addLogEntry('info', 'Common ports loaded - COM3 is recommended');
         }
 
         async function loadAvailablePorts() {
