@@ -74,22 +74,32 @@ void setup() {
 }
 
 void loop() {
-  // Handle button presses
+  // --- TESTE: imprimir estado dos botões ---
+  int dotReading = digitalRead(DOT_BUTTON_PIN);
+  int dashReading = digitalRead(DASH_BUTTON_PIN);
+  int endReading = digitalRead(END_BUTTON_PIN);
+
+  Serial.print("Dot: ");  Serial.print(dotReading);
+  Serial.print(" | Dash: "); Serial.print(dashReading);
+  Serial.print(" | End: ");  Serial.println(endReading);
+  // HIGH = não pressionado, LOW = pressionado
+
+  // --- Código original ---
   handleDotButton();
   handleDashButton();
   handleEndButton();
   
-  // Handle LED timing
   handleLEDs();
-  
-  // Send periodic status
+  handleSerialCommands();
+
   static unsigned long lastStatus = 0;
   if (millis() - lastStatus > 10000) { // Every 10 seconds
     sendMorseData("heartbeat", "System active - " + String(millis() / 1000) + "s uptime");
     lastStatus = millis();
   }
   
-  delay(10);
+  delay(200); // um pouco maior para enxergar as leituras no Serial Monitor
+
 }
 
 void handleDotButton() {
