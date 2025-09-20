@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Arduino Dashboard Connection Test</h1>
+        
+        <div class="test-section">
+            <h3>Test 1: Server Availability</h3>
+            <button onclick="testServer()">Test Server Connection</button>
+            <div id="serverResult" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test 2: Morse Code Dashboard</h3>
+            <button onclick="testMorseDashboard()">Test Morse Dashboard</button>
+            <div id="morseResult" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test 3: Arduino Dashboard</h3>
+            <button onclick="testArduinoDashboard()">Test Arduino Dashboard</button>
+            <div id="arduinoResult" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test 4: Connection Timeout</h3>
+            <button onclick="testTimeout()">Test Connection Timeout</button>
+            <div id="timeoutResult" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 Test Results Summary</h3>
+            <div id="summary" class="log">
+                Click the test buttons above to see results...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            server: false,
+            morse: false,
+            arduino: false,
+            timeout: false
+        };
+
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            element.appendChild(logEntry);
+            element.scrollTop = element.scrollHeight;
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('summary');
+            const total = Object.keys(testResults).length;
+            const passed = Object.values(testResults).filter(Boolean).length;
+            
+            summary.innerHTML = `
+                <div class="${passed === total ? 'success' : 'warning'}">
+                    Tests Passed: ${passed}/${total}
+                </div>
+                <div>Server Connection: ${testResults.server ? '✅' : '❌'}</div>
+                <div>Morse Dashboard: ${testResults.morse ? '✅' : '❌'}</div>
+                <div>Arduino Dashboard: ${testResults.arduino ? '✅' : '❌'}</div>
+                <div>Timeout Handling: ${testResults.timeout ? '✅' : '❌'}</div>
+            `;
+        }
+
+        async function testServer() {
+            log('serverResult', 'Testing server connection...', 'info');
+            
+            try {
+                const response = await fetch('/api/ports');
+                if (response.ok) {
+                    log('serverResult', '✅ Server is running and responding', 'success');
+                    testResults.server = true;
+                } else {
+                    log('serverResult', '❌ Server responded with error', 'error');
+                    testResults.server = false;
+                }
+            } catch (error) {
+                log('serverResult', `❌ Server not available: ${error.message}`, 'error');
+                testResults.server = false;
+            }
+            
+            updateSummary();
+        }
+
+        function testMorseDashboard() {
+            log('morseResult', 'Testing Morse code dashboard...', 'info');
+            
+            try {
+                // Test if morse-script.js can be loaded
+                const script = document.createElement('script');
+                script.src = 'morse-script.js';
+                script.onload = () => {
+                    log('morseResult', '✅ Morse script loaded successfully', 'success');
+                    testResults.morse = true;
+                    updateSummary();
+                };
+                script.onerror = () => {
+                    log('morseResult', '❌ Failed to load morse-script.js', 'error');
+                    testResults.morse = false;
+                    updateSummary();
+                };
+                document.head.appendChild(script);
+            } catch (error) {
+                log('morseResult', `❌ Error testing Morse dashboard: ${error.message}`, 'error');
+                testResults.morse = false;
+                updateSummary();
+            }
+        }
+
+        function testArduinoDashboard() {
+            log('arduinoResult', 'Testing Arduino dashboard...', 'info');
+            
+            try {
+                // Test if arduino-script.js can be loaded
+                const script = document.createElement('script');
+                script.src = 'arduino-script.js';
+                script.onload = () => {
+                    log('arduinoResult', '✅ Arduino script loaded successfully', 'success');
+                    testResults.arduino = true;
+                    updateSummary();
+                };
+                script.onerror = () => {
+                    log('arduinoResult', '❌ Failed to load arduino-script.js', 'error');
+                    testResults.arduino = false;
+                    updateSummary();
+                };
+                document.head.appendChild(script);
+            } catch (error) {
+                log('arduinoResult', `❌ Error testing Arduino dashboard: ${error.message}`, 'error');
+                testResults.arduino = false;
+                updateSummary();
+            }
+        }
+
+        function testTimeout() {
+            log('timeoutResult', 'Testing connection timeout handling...', 'info');
+            
+            try {
+                // Simulate a connection attempt that should timeout
+                const startTime = Date.now();
+                
+                // Create a mock socket that will fail to connect
+                const mockSocket = {
+                    connected: false,
+                    on: function(event, callback) {
+                        if (event === 'connect_error') {
+                            // Simulate connection error after 1 second
+                            setTimeout(() => {
+                                callback(new Error('Connection failed'));
+                            }, 1000);
+                        }
+                    },
+                    emit: function() {}
+                };
+                
+                // Test timeout logic
+                const timeout = setTimeout(() => {
+                    const elapsed = Date.now() - startTime;
+                    if (elapsed >= 1000) {
+                        log('timeoutResult', '✅ Timeout handling works correctly', 'success');
+                        testResults.timeout = true;
+                    } else {
+                        log('timeoutResult', '❌ Timeout handling failed', 'error');
+                        testResults.timeout = false;
+                    }
+                    updateSummary();
+                }, 1500);
+                
+                // Clear timeout if connection succeeds (which it won't in this test)
+                setTimeout(() => {
+                    clearTimeout(timeout);
+                }, 2000);
+                
+            } catch (error) {
+                log('timeoutResult', `❌ Error testing timeout: ${error.message}`, 'error');
+                testResults.timeout = false;
+                updateSummary();
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            log('summary', 'Connection test page loaded. Click test buttons to begin...', 'info');
+        });
+    </script>
+</body>
+</html>

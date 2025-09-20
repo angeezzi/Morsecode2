@@ -93,6 +93,32 @@ class ArduinoDashboard {
     }
 
     setupSocketListeners() {
+        // Socket connection events
+        this.socket.on('connect', () => {
+            console.log('Socket connected to server');
+            this.addLogEntry('info', 'Connected to server');
+        });
+
+        this.socket.on('disconnect', () => {
+            console.log('Socket disconnected from server');
+            this.addLogEntry('warning', 'Disconnected from server');
+            this.updateConnectionStatus('disconnected', 'Server Disconnected');
+            this.updateConnectionButtons(false);
+        });
+
+        this.socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+            this.addLogEntry('error', 'Cannot connect to server. Please start the Node.js server with "npm start"');
+            this.updateConnectionStatus('disconnected', 'Server Not Available');
+            this.updateConnectionButtons(false);
+            
+            // Clear connection timeout
+            if (this.connectionTimeout) {
+                clearTimeout(this.connectionTimeout);
+                this.connectionTimeout = null;
+            }
+        });
+
         // Arduino connection events
         this.socket.on('arduino_connected', (data) => {
             this.handleArduinoConnected(data);
@@ -179,9 +205,22 @@ class ArduinoDashboard {
             try {
                 this.socket = io();
                 this.setupSocketListeners();
+                
+                // Set a timeout for connection
+                this.connectionTimeout = setTimeout(() => {
+                    if (this.socket && !this.socket.connected) {
+                        this.addLogEntry('error', 'Connection timeout. Server may not be running.');
+                        this.updateConnectionStatus('disconnected', 'Connection Timeout');
+                        this.connectBtn.disabled = false;
+                        this.disconnectBtn.disabled = true;
+                    }
+                }, 5000); // 5 second timeout
+                
             } catch (error) {
                 this.addLogEntry('error', 'Server not available. Please start the Node.js server with "npm start"');
                 this.updateConnectionStatus('disconnected', 'Server Not Available');
+                this.connectBtn.disabled = false;
+                this.disconnectBtn.disabled = true;
                 return;
             }
         }
@@ -234,6 +273,12 @@ class ArduinoDashboard {
         
         this.addLogEntry('success', `Arduino connected on ${data.port}`);
         this.updateDataDisplay();
+        
+        // Clear connection timeout
+        if (this.connectionTimeout) {
+            clearTimeout(this.connectionTimeout);
+            this.connectionTimeout = null;
+        }
     }
 
     handleArduinoDisconnected(data) {
@@ -251,6 +296,13 @@ class ArduinoDashboard {
     handleArduinoError(data) {
         this.addLogEntry('error', `${data.message}: ${data.error}`);
         this.updateConnectionStatus('disconnected', 'Connection Error');
+        this.updateConnectionButtons(false);
+        
+        // Clear connection timeout
+        if (this.connectionTimeout) {
+            clearTimeout(this.connectionTimeout);
+            this.connectionTimeout = null;
+        }
     }
 
     handleArduinoData(data) {
