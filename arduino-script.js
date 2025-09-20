@@ -1,6 +1,6 @@
 class ArduinoDashboard {
     constructor() {
-        this.socket = io();
+        this.socket = null;
         this.isConnected = false;
         this.messageCount = 0;
         this.connectionStartTime = null;
@@ -8,8 +8,8 @@ class ArduinoDashboard {
         
         this.initializeElements();
         this.setupEventListeners();
+        this.loadCommonPorts(); // Load ports immediately
         this.setupSocketListeners();
-        this.loadAvailablePorts();
     }
 
     initializeElements() {
@@ -50,6 +50,7 @@ class ArduinoDashboard {
 
         // Refresh ports
         this.refreshPortsBtn.addEventListener('click', () => {
+            this.loadCommonPorts();
             this.loadAvailablePorts();
         });
 
@@ -172,11 +173,26 @@ class ArduinoDashboard {
         }
 
         this.updateConnectionStatus('connecting', 'Connecting...');
+        
+        // Initialize socket if not already done
+        if (!this.socket) {
+            try {
+                this.socket = io();
+                this.setupSocketListeners();
+            } catch (error) {
+                this.addLogEntry('error', 'Server not available. Please start the Node.js server with "npm start"');
+                this.updateConnectionStatus('disconnected', 'Server Not Available');
+                return;
+            }
+        }
+        
         this.socket.emit('connect_arduino', { port: selectedPort });
     }
 
     disconnectFromArduino() {
-        this.socket.emit('disconnect_arduino');
+        if (this.socket) {
+            this.socket.emit('disconnect_arduino');
+        }
         this.handleArduinoDisconnected({ message: 'Manually disconnected' });
     }
 
