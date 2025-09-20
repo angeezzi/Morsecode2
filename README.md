@@ -41,6 +41,7 @@ A complete system for real-time communication between Arduino and a web browser 
 
 ## 🚀 Quick Start
 
+### Option 1: Local Development (Full Functionality)
 1. **Start the Node.js server**
    ```bash
    npm start
@@ -59,6 +60,11 @@ A complete system for real-time communication between Arduino and a web browser 
 4. **Start communicating**
    - **General Dashboard**: Send commands, monitor sensors, view real-time data
    - **Morse Code System**: Use buttons to input Morse code, see real-time translation
+
+### Option 2: Static Hosting (Demo Only)
+- For GitHub Pages or static hosting, use `static-demo.html` as your index
+- This provides a demonstration interface but requires local server for Arduino communication
+- Direct file access: `arduino-dashboard.html` and `morse-dashboard.html`
 
 ## 📁 Project Structure
 

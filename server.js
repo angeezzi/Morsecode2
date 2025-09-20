@@ -109,7 +109,7 @@ async function getAvailablePorts() {
 
 // Routes
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/hub.html');
+  res.sendFile(__dirname + '/index.html');
 });
 
 app.get('/general', (req, res) => {
@@ -117,6 +117,15 @@ app.get('/general', (req, res) => {
 });
 
 app.get('/morse', (req, res) => {
+  res.sendFile(__dirname + '/morse-dashboard.html');
+});
+
+// Direct file access routes (for static hosting compatibility)
+app.get('/arduino-dashboard.html', (req, res) => {
+  res.sendFile(__dirname + '/arduino-dashboard.html');
+});
+
+app.get('/morse-dashboard.html', (req, res) => {
   res.sendFile(__dirname + '/morse-dashboard.html');
 });
 
