@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Morse Code Dashboard</title>
+    <link rel="stylesheet" href="morse-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-broadcast-tower"></i> Arduino Morse Code System</h1>
+            <p>Real-time Morse code input and translation via Arduino</p>
+        </header>
+
+        <!-- Connection Panel -->
+        <div class="connection-panel">
+            <h3><i class="fas fa-plug"></i> Arduino Connection</h3>
+            <div class="connection-controls">
+                <div class="port-selection">
+                    <label for="portSelect">Select Arduino Port:</label>
+                    <select id="portSelect">
+                        <option value="">Select a port...</option>
+                    </select>
+                    <button id="refreshPorts" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div class="connection-buttons">
+                    <button id="connectBtn" class="btn btn-primary" disabled>
+                        <i class="fas fa-link"></i> Connect
+                    </button>
+                    <button id="disconnectBtn" class="btn btn-danger" disabled>
+                        <i class="fas fa-unlink"></i> Disconnect
+                    </button>
+                </div>
+            </div>
+            <div id="connectionStatus" class="status-indicator">
+                <i class="fas fa-circle"></i> <span>Not Connected</span>
+            </div>
+        </div>
+
+        <!-- Morse Code Display -->
+        <div class="morse-display-panel">
+            <h3><i class="fas fa-keyboard"></i> Morse Code Input</h3>
+            <div class="morse-visualization">
+                <div class="current-letter">
+                    <label>Current Letter:</label>
+                    <div id="currentLetter" class="morse-code">- - -</div>
+                </div>
+                <div class="current-word">
+                    <label>Current Word:</label>
+                    <div id="currentWord" class="decoded-text">HELLO</div>
+                </div>
+                <div class="morse-sequence">
+                    <label>Morse Sequence:</label>
+                    <div id="morseSequence" class="morse-sequence-display">.... . .-.. .-.. ---</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LED Status Panel -->
+        <div class="led-panel">
+            <h3><i class="fas fa-lightbulb"></i> LED Status</h3>
+            <div class="led-display">
+                <div class="led-item">
+                    <div class="led blue-led" id="blueLed">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <span>Dot LED (Blue)</span>
+                </div>
+                <div class="led-item">
+                    <div class="led red-led" id="redLed">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <span>Dash LED (Red)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button Instructions -->
+        <div class="instructions-panel">
+            <h3><i class="fas fa-info-circle"></i> Button Instructions</h3>
+            <div class="instruction-grid">
+                <div class="instruction-item">
+                    <div class="instruction-icon dot-icon">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="instruction-text">
+                        <h4>Dot Button</h4>
+                        <p>Press to add a dot (.) to current letter</p>
+                    </div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-icon dash-icon">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <div class="instruction-text">
+                        <h4>Dash Button</h4>
+                        <p>Press to add a dash (-) to current letter</p>
+                    </div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-icon end-icon">
+                        <i class="fas fa-stop"></i>
+                    </div>
+                    <div class="instruction-text">
+                        <h4>End Button</h4>
+                        <p>1 click: End letter<br>2 clicks: End word<br>3 clicks: Send message</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message History -->
+        <div class="message-panel">
+            <h3><i class="fas fa-history"></i> Message History</h3>
+            <div class="message-controls">
+                <button id="clearMessages" class="btn btn-secondary">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+                <button id="exportMessages" class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+            <div id="messageHistory" class="message-list">
+                <div class="message-item">
+                    <span class="timestamp">[00:00:00]</span>
+                    <span class="message">System ready. Connect to Arduino to start Morse code input.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Morse Code Reference -->
+        <div class="reference-panel">
+            <h3><i class="fas fa-book"></i> Morse Code Reference</h3>
+            <div class="reference-content">
+                <div class="alphabet-section">
+                    <h4>Alphabet</h4>
+                    <div class="morse-grid" id="alphabetGrid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="numbers-section">
+                    <h4>Numbers</h4>
+                    <div class="morse-grid" id="numbersGrid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h3><i class="fas fa-cogs"></i> Controls</h3>
+            <div class="control-buttons">
+                <button id="resetMorse" class="btn btn-warning">
+                    <i class="fas fa-undo"></i> Reset Morse
+                </button>
+                <button id="clearAll" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+                <button id="testLEDs" class="btn btn-info">
+                    <i class="fas fa-lightbulb"></i> Test LEDs
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Socket.IO Client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="morse-script.js"></script>
+</body>
+</html>

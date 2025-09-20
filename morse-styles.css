@@ -1,0 +1,540 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Panels */
+.connection-panel,
+.morse-display-panel,
+.led-panel,
+.instructions-panel,
+.message-panel,
+.reference-panel,
+.control-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.connection-panel h3,
+.morse-display-panel h3,
+.led-panel h3,
+.instructions-panel h3,
+.message-panel h3,
+.reference-panel h3,
+.control-panel h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Connection Panel */
+.connection-controls {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 20px;
+}
+
+.port-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.port-selection label {
+    font-weight: 500;
+    color: #555;
+}
+
+.port-selection select {
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white;
+    transition: border-color 0.3s ease;
+}
+
+.port-selection select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.connection-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.status-indicator {
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.status-indicator.connected {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-indicator.disconnected {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-indicator.connecting {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Morse Display Panel */
+.morse-visualization {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.current-letter,
+.current-word,
+.morse-sequence {
+    background: #f8f9ff;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.current-letter label,
+.current-word label,
+.morse-sequence label {
+    display: block;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.morse-code {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.2em;
+}
+
+.decoded-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #28a745;
+    letter-spacing: 0.1em;
+}
+
+.morse-sequence-display {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #6c757d;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1em;
+}
+
+/* LED Panel */
+.led-display {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.led-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.led {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.blue-led {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: 3px solid #bbdefb;
+}
+
+.blue-led.active {
+    background: #1976d2;
+    color: white;
+    box-shadow: 0 0 20px rgba(25, 118, 210, 0.6);
+    animation: pulse 0.3s ease-in-out;
+}
+
+.red-led {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 3px solid #ffcdd2;
+}
+
+.red-led.active {
+    background: #d32f2f;
+    color: white;
+    box-shadow: 0 0 20px rgba(211, 47, 47, 0.6);
+    animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Instructions Panel */
+.instruction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.instruction-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9ff;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.instruction-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.instruction-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.dot-icon {
+    background: #1976d2;
+}
+
+.dash-icon {
+    background: #d32f2f;
+}
+
+.end-icon {
+    background: #ff9800;
+}
+
+.instruction-text h4 {
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.instruction-text p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Message Panel */
+.message-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.message-list {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.message-item {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background: white;
+    border-left: 4px solid #667eea;
+}
+
+.timestamp {
+    color: #666;
+    font-weight: 500;
+}
+
+.message {
+    margin-left: 10px;
+}
+
+/* Reference Panel */
+.reference-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.alphabet-section h4,
+.numbers-section h4 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.morse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+}
+
+.morse-item {
+    background: #f8f9ff;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.morse-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.morse-item .letter {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.morse-item .code {
+    font-size: 0.8rem;
+    color: #666;
+    font-family: 'Courier New', monospace;
+}
+
+/* Control Panel */
+.control-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover:not(:disabled) {
+    background: #e0a800;
+    transform: translateY(-2px);
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover:not(:disabled) {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .connection-controls {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .connection-buttons {
+        justify-content: center;
+    }
+    
+    .morse-visualization {
+        grid-template-columns: 1fr;
+    }
+    
+    .led-display {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .instruction-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reference-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .control-buttons {
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-item {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.morse-item {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Scrollbar Styling */
+.message-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.message-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.message-list::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 4px;
+}
+
+.message-list::-webkit-scrollbar-thumb:hover {
+    background: #5a6fd8;
+}

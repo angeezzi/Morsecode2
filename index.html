@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Web Communication Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hub-container {
+            max-width: 800px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .dashboard-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .features li::before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .morse-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .morse-btn:hover {
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .info-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .info-section p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .hub-container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hub-container">
+        <header class="header">
+            <h1><i class="fas fa-microchip"></i> Arduino Web Communication Hub</h1>
+            <p>Choose your Arduino communication interface</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- General Arduino Dashboard -->
+            <a href="/general" class="dashboard-card">
+                <h3><i class="fas fa-desktop"></i> General Arduino Dashboard</h3>
+                <p>Universal Arduino communication interface for sensors, actuators, and general data exchange.</p>
+                <ul class="features">
+                    <li>Serial port management</li>
+                    <li>Real-time data visualization</li>
+                    <li>Sensor monitoring</li>
+                    <li>Device control</li>
+                    <li>Data logging and export</li>
+                    <li>Multiple Arduino examples</li>
+                </ul>
+                <div class="btn">Open Dashboard</div>
+            </a>
+
+            <!-- Morse Code Dashboard -->
+            <a href="/morse" class="dashboard-card">
+                <h3><i class="fas fa-broadcast-tower"></i> Morse Code System</h3>
+                <p>Specialized interface for Morse code input and translation using Arduino buttons and LEDs.</p>
+                <ul class="features">
+                    <li>3-button Morse input</li>
+                    <li>Real-time translation</li>
+                    <li>LED visual feedback</li>
+                    <li>Message history</li>
+                    <li>Morse code reference</li>
+                    <li>Export functionality</li>
+                </ul>
+                <div class="btn morse-btn">Open Morse Dashboard</div>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <h3><i class="fas fa-info-circle"></i> Getting Started</h3>
+            <p>
+                Make sure your Arduino is connected via USB and the appropriate code is uploaded. 
+                The system will automatically detect available ports. For detailed setup instructions, 
+                see the README.md and SETUP.md files in the project directory.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
