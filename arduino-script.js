@@ -116,12 +116,14 @@ class ArduinoDashboard {
     }
 
     async loadAvailablePorts() {
+        // Load common ports immediately
+        this.loadCommonPorts();
+        
         try {
             const response = await fetch('/api/ports');
             const ports = await response.json();
             
-            this.portSelect.innerHTML = '<option value="">Select a port...</option>';
-            
+            // Add detected ports to the existing common ports
             ports.forEach(port => {
                 const option = document.createElement('option');
                 option.value = port.path;
@@ -129,10 +131,37 @@ class ArduinoDashboard {
                 this.portSelect.appendChild(option);
             });
 
-            this.addLogEntry('info', `Found ${ports.length} available ports`);
+            this.addLogEntry('info', `Found ${ports.length} detected ports + common ports`);
         } catch (error) {
-            this.addLogEntry('error', `Failed to load ports: ${error.message}`);
+            this.addLogEntry('warning', `Server not available, using common ports only`);
         }
+    }
+
+    loadCommonPorts() {
+        this.portSelect.innerHTML = '<option value="">Select a port...</option>';
+        
+        const commonPorts = [
+            { path: 'COM3', friendlyName: 'Arduino COM3 (Recommended)' },
+            { path: 'COM1', friendlyName: 'Arduino COM1' },
+            { path: 'COM4', friendlyName: 'Arduino COM4' },
+            { path: 'COM5', friendlyName: 'Arduino COM5' },
+            { path: 'COM6', friendlyName: 'Arduino COM6' },
+            { path: 'COM7', friendlyName: 'Arduino COM7' },
+            { path: 'COM8', friendlyName: 'Arduino COM8' },
+            { path: '/dev/ttyUSB0', friendlyName: 'Arduino USB0 (Linux)' },
+            { path: '/dev/ttyACM0', friendlyName: 'Arduino ACM0 (Linux)' },
+            { path: '/dev/ttyUSB1', friendlyName: 'Arduino USB1 (Linux)' },
+            { path: '/dev/ttyACM1', friendlyName: 'Arduino ACM1 (Linux)' }
+        ];
+        
+        commonPorts.forEach(port => {
+            const option = document.createElement('option');
+            option.value = port.path;
+            option.textContent = `${port.friendlyName} (${port.path})`;
+            this.portSelect.appendChild(option);
+        });
+        
+        this.addLogEntry('info', 'Common ports loaded - COM3 is recommended');
     }
 
     connectToArduino() {
