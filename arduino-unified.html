@@ -543,6 +543,9 @@
                 <div id="connectionStatus" class="status-indicator">
                     <i class="fas fa-circle"></i> <span>Not Connected</span>
                 </div>
+                <div id="serverStatus" class="status-indicator" style="margin-top: 10px; font-size: 0.9rem;">
+                    <i class="fas fa-server"></i> <span>Checking server...</span>
+                </div>
             </div>
 
             <!-- Data Display Panel -->
@@ -749,6 +752,9 @@
             window.messageHistory = document.getElementById('messageHistory');
             window.clearMessagesBtn = document.getElementById('clearMessages');
             window.exportMessagesBtn = document.getElementById('exportMessages');
+            
+            // Server status
+            window.serverStatus = document.getElementById('serverStatus');
         }
 
         function setupEventListeners() {
@@ -830,6 +836,25 @@
                 
                 portSelect.innerHTML = '<option value="">Select a port...</option>';
                 
+                // Add common ports first
+                const commonPorts = [
+                    { path: 'COM3', friendlyName: 'Arduino COM3' },
+                    { path: 'COM1', friendlyName: 'Arduino COM1' },
+                    { path: 'COM4', friendlyName: 'Arduino COM4' },
+                    { path: 'COM5', friendlyName: 'Arduino COM5' },
+                    { path: '/dev/ttyUSB0', friendlyName: 'Arduino USB0' },
+                    { path: '/dev/ttyACM0', friendlyName: 'Arduino ACM0' }
+                ];
+                
+                // Add common ports
+                commonPorts.forEach(port => {
+                    const option = document.createElement('option');
+                    option.value = port.path;
+                    option.textContent = `${port.friendlyName} (${port.path})`;
+                    portSelect.appendChild(option);
+                });
+                
+                // Add detected ports
                 ports.forEach(port => {
                     const option = document.createElement('option');
                     option.value = port.path;
@@ -837,9 +862,32 @@
                     portSelect.appendChild(option);
                 });
 
-                addLogEntry('info', `Found ${ports.length} available ports`);
+                addLogEntry('info', `Found ${ports.length} detected ports + ${commonPorts.length} common ports`);
+                updateServerStatus('connected', 'Server Connected');
             } catch (error) {
-                addLogEntry('error', `Failed to load ports: ${error.message}`);
+                addLogEntry('warning', `Server not available, using common ports only`);
+                updateServerStatus('disconnected', 'Server Not Available - Using Common Ports');
+                
+                // Fallback to common ports when server is not available
+                portSelect.innerHTML = '<option value="">Select a port...</option>';
+                
+                const commonPorts = [
+                    { path: 'COM3', friendlyName: 'Arduino COM3 (Default)' },
+                    { path: 'COM1', friendlyName: 'Arduino COM1' },
+                    { path: 'COM4', friendlyName: 'Arduino COM4' },
+                    { path: 'COM5', friendlyName: 'Arduino COM5' },
+                    { path: '/dev/ttyUSB0', friendlyName: 'Arduino USB0' },
+                    { path: '/dev/ttyACM0', friendlyName: 'Arduino ACM0' }
+                ];
+                
+                commonPorts.forEach(port => {
+                    const option = document.createElement('option');
+                    option.value = port.path;
+                    option.textContent = `${port.friendlyName} (${port.path})`;
+                    portSelect.appendChild(option);
+                });
+                
+                addLogEntry('info', 'Using common ports - start server for auto-detection');
             }
         }
 
@@ -854,8 +902,14 @@
             
             // Initialize socket if not already done
             if (!socket) {
-                socket = io();
-                setupSocketListeners();
+                try {
+                    socket = io();
+                    setupSocketListeners();
+                } catch (error) {
+                    addLogEntry('error', 'Failed to connect to server. Make sure Node.js server is running.');
+                    updateConnectionStatus('disconnected', 'Server Not Available');
+                    return;
+                }
             }
             
             socket.emit('connect_arduino', { port: selectedPort });
@@ -1040,6 +1094,11 @@
             connectionStatus.innerHTML = `<i class="fas fa-circle"></i> <span>${message}</span>`;
         }
 
+        function updateServerStatus(status, message) {
+            serverStatus.className = `status-indicator ${status}`;
+            serverStatus.innerHTML = `<i class="fas fa-server"></i> <span>${message}</span>`;
+        }
+
         function updateConnectionButtons(connected) {
             connectBtn.disabled = connected || !portSelect.value;
             disconnectBtn.disabled = !connected;
@@ -1147,3 +1206,4 @@
     </script>
 </body>
 </html>
+
